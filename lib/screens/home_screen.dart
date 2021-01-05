@@ -59,7 +59,10 @@ class _HomeScreenState extends State<HomeScreen> {
               .size(context.screenWidth, context.screenHeight)
               .withGradient(
                 LinearGradient(
-                  colors: [AIUtil.primaryColor1, AIUtil.primaryColor2],
+                  colors: [
+                    AIUtil.primaryColor2,
+                    _selectedColor ?? AIUtil.primaryColor1,
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -73,63 +76,76 @@ class _HomeScreenState extends State<HomeScreen> {
                       primaryColor: Vx.purple300, secondaryColor: Colors.white))
               .h(100)
               .p16(),
-          VxSwiper.builder(
-              itemCount: radios.length,
-              enlargeCenterPage: true,
-              aspectRatio: 1.0,
-              itemBuilder: (context, index) {
-                final radio = radios[index];
-                return VxBox(
-                  child: ZStack([
-                    Positioned(
-                      top: 0.0,
-                      right: 0.0,
-                      child: VxBox(
-                              child: radio.category.text.white.uppercase.wide
-                                  .make()
-                                  .px16())
-                          .height(40)
-                          .black
-                          .alignCenter
-                          .withRounded(value: 10)
-                          .make(),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: VStack(
-                        [
-                          radio.name.text.xl3.white.bold.make(),
-                          5.heightBox,
-                          radio.tagline.text.sm.white.semiBold.make(),
-                        ],
-                        crossAlignment: CrossAxisAlignment.center,
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: [
-                        Icon(CupertinoIcons.play_circle, color: Colors.white),
-                        10.heightBox,
-                        'Double tap to play'.text.gray300.make()
-                      ].vStack(),
-                    ),
-                  ], clip: Clip.antiAlias),
-                )
-                    .clip(Clip.antiAlias)
-                    .bgImage(
-                      DecorationImage(
-                          image: NetworkImage(radio.image),
-                          fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(
-                              Colors.black.withOpacity(0.3), BlendMode.darken)),
+          radios != null
+              ? VxSwiper.builder(
+                  itemCount: radios.length,
+                  enlargeCenterPage: true,
+                  aspectRatio: 1.0,
+                  onPageChanged: (index) {
+                    final colorHex = radios[index].color;
+                    _selectedColor = Color(int.tryParse(colorHex));
+                    setState(() {});
+                  },
+                  itemBuilder: (context, index) {
+                    final radio = radios[index];
+                    return VxBox(
+                      child: ZStack([
+                        Positioned(
+                          top: 0.0,
+                          right: 0.0,
+                          child: VxBox(
+                                  child: radio
+                                      .category.text.white.uppercase.wide
+                                      .make()
+                                      .px16())
+                              .height(40)
+                              .black
+                              .alignCenter
+                              .withRounded(value: 10)
+                              .make(),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: VStack(
+                            [
+                              radio.name.text.xl3.white.bold.make(),
+                              5.heightBox,
+                              radio.tagline.text.sm.white.semiBold.make(),
+                            ],
+                            crossAlignment: CrossAxisAlignment.center,
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: [
+                            Icon(CupertinoIcons.play_circle,
+                                color: Colors.white),
+                            10.heightBox,
+                            'Double tap to play'.text.gray300.make()
+                          ].vStack(),
+                        ),
+                      ], clip: Clip.antiAlias),
                     )
-                    .border(color: Colors.black, width: 5)
-                    .withRounded(value: 60)
-                    .make()
-                    .onInkDoubleTap(() {
-                  _playMusic(url: radio.url);
-                }).p16();
-              }).centered(),
+                        .clip(Clip.antiAlias)
+                        .bgImage(
+                          DecorationImage(
+                              image: NetworkImage(radio.image),
+                              fit: BoxFit.cover,
+                              colorFilter: ColorFilter.mode(
+                                  Colors.black.withOpacity(0.3),
+                                  BlendMode.darken)),
+                        )
+                        .border(color: Colors.black, width: 5)
+                        .withRounded(value: 60)
+                        .make()
+                        .onInkDoubleTap(() {
+                      _playMusic(url: radio.url);
+                    }).p16();
+                  }).centered()
+              : Center(
+                  child:
+                      CircularProgressIndicator(backgroundColor: Colors.white),
+                ),
           Align(
               alignment: Alignment.bottomCenter,
               child: [

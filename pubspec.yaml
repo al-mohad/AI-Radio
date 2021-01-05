@@ -23,6 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  alan_voice: ^2.0.13
   audioplayers: ^0.15.0
   cupertino_icons: ^1.0.0
   google_fonts: ^1.1.1
