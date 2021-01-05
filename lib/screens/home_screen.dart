@@ -1,5 +1,6 @@
 import 'package:ai_radio/models/radio.dart';
 import 'package:ai_radio/utils/ai_util.dart';
+import 'package:alan_voice/alan_voice.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    setupAlan();
     fetchRadios();
     _audioPlayer.onPlayerStateChanged.listen((event) {
       if (event == AudioPlayerState.PLAYING) {
@@ -40,6 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
     radios = MYRadioList.fromJson(radioJson).radios;
     print(radios);
     setState(() {});
+  }
+
+  setupAlan() {
+    AlanVoice.addButton(
+        "a472cc0a375d797c10f6b426c5a540032e956eca572e1d8b807a3e2338fdd0dc/stage",
+        buttonAlign: AlanVoice.BUTTON_ALIGN_LEFT);
   }
 
   _playMusic({String url}) {
