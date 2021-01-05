@@ -41,13 +41,49 @@ class _HomeScreenState extends State<HomeScreen> {
     final radioJson = await rootBundle.loadString('assets/radio.json');
     radios = MYRadioList.fromJson(radioJson).radios;
     print(radios);
+    _selectedRadio = radios[0];
+    _selectedColor = Color(int.tryParse(radios[0].color));
     setState(() {});
   }
 
   setupAlan() {
     AlanVoice.addButton(
         "a472cc0a375d797c10f6b426c5a540032e956eca572e1d8b807a3e2338fdd0dc/stage",
-        buttonAlign: AlanVoice.BUTTON_ALIGN_LEFT);
+        buttonAlign: AlanVoice.BUTTON_ALIGN_RIGHT);
+    AlanVoice.callbacks.add((command) => _handleCommand(command.data));
+  }
+
+  _handleCommand(Map<String, dynamic> response) {
+    switch (response['command']) {
+      case 'play':
+        _playMusic(url: _selectedRadio.url);
+        break;
+      case 'stop':
+        _audioPlayer.stop();
+        break;
+      case 'next':
+        final index = _selectedRadio.id;
+        MYRadio newRadio;
+        if (index + 1 > radios.length) {
+          newRadio = radios.firstWhere((element) => element.id == index + 1);
+          radios.remove(newRadio);
+          radios.insert(0, newRadio);
+        }
+        _playMusic(url: newRadio.url);
+        break;
+      case 'prev':
+        final index = _selectedRadio.id;
+        MYRadio newRadio;
+        if (index - 1 > radios.length) {
+          newRadio = radios.firstWhere((element) => element.id == index - 1);
+          radios.remove(newRadio);
+          radios.insert(0, newRadio);
+        }
+        _playMusic(url: newRadio.url);
+        break;
+      default:
+        print('Command Was ${response['command']}');
+    }
   }
 
   _playMusic({String url}) {
