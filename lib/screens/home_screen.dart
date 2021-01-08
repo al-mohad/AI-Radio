@@ -165,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 .h(100)
                 .p16(),
             // 20.heightBox,
-            'Start With - Hey Alan '.text.italic.semiBold.white.make(),
+            'Start With - Hey Alan'.text.italic.semiBold.white.make(),
             10.heightBox,
             VxSwiper.builder(
                 itemCount: suggestions.length,
